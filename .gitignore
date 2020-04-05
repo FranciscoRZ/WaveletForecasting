@@ -1,4 +1,14 @@
-# ignore datasets
-
+# Ignore data
 data/*
 *.xlsx
+
+# Ignore mac things
+.DS_Store?
+*.DS_Store
+
+# Ignore visual studio code things
+.vs/
+*.vs
+
+# Ignore jupyter things
+.ipynb_checkpoints/
