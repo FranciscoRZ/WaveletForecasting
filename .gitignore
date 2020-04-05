@@ -1,6 +1,6 @@
 # Ignore data
-data/*
 *.xlsx
+*.csv
 
 # Ignore mac things
 .DS_Store?
