@@ -18,3 +18,12 @@ x13/*
 
 # Ignore cache
 production_code/__pycache__/
+resources/scripts/__pycache__/
+
+# Don't publish what isn't mine
+resources/images.zip
+resources/images/
+resources/scripts/sure.py
+resources/scripts/wtTools.py
+resources/tp_sd205.zip
+
