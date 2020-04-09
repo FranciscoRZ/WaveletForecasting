@@ -12,3 +12,9 @@
 
 # Ignore jupyter things
 .ipynb_checkpoints/
+
+# Ignore X13 ARIMA folder
+x13/*
+
+# Ignore cache
+production_code/__pycache__/
