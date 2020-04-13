@@ -40,13 +40,13 @@ class Haar(object):
 	
 	def getDetailSignalJ(self, j: int) -> np.array:
 		try:
-			return self.__detailSignalsDict[j][2:self.__T - pow(2, -j)]
+			return self.__detailSignalsDict[str(j)][2:self.__T - pow(2, -j)]
 		except (KeyError):
 			print("KEY ERROR: Detail signal not found in computed results.")
 	
 	def getWaveletTransformJ(self, j: int) -> np.array:
 		try:
-			return self.__coeffDict[j][1:np.size(self.__coeffDict[j]) - 3]
+			return self.__coeffDict[str(j)][1:np.size(self.__coeffDict[j]) - 3]
 		except (KeyError):
 			print("KEY ERROR: Wavelet transform not found in computed results.")
 	
@@ -77,17 +77,17 @@ class Haar(object):
 
 		    coeff[i] = pow(2, j / 2) * (sum1 - sum2)
 		  
-		self.__coeffDict[j] = coeff
+		self.__coeffDict[str(j)] = coeff
 		
 		return coeff
 	
 	def waveletDetailSignal(self, j: int) -> np.array:
 		
 		try:
-			coeff = self.__coeffDict[j]
+			coeff = self.__coeffDict[str(j)]
 		except(KeyError):
-			self.coeffDict[j] = self.haarWaveletTransform(j)
-			coeff = self.__coeffDict[j]
+			self.__coeffDict[str(j)] = self.waveletTransform(j)
+			coeff = self.__coeffDict[str(j)]
 		
 		# Determine number of shifts possible at this resolution level
 		nb_k = int(np.ceil(self.__T / pow(2, -j)) + 2)
@@ -111,7 +111,7 @@ class Haar(object):
 		    
 		    detailSignal[i] = 2**(j/2) * (sum1 - sum2)
 		
-		self.__detailSignalsDict[j] = detailSignal
+		self.__detailSignalsDict[str(j)] = detailSignal
 		
 		return detailSignal
 	
