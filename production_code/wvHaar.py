@@ -54,7 +54,7 @@ class Haar(object):
 	
 	#region TRANSFORM
 	
-	def haarWaveletTransform(self, j: int) -> np.array:
+	def waveletTransform(self, j: int) -> np.array:
 
 		# Determine number of shifts possible at this resolution level
 		nb_k = int(np.ceil(self.__T / pow(2, -j)) + 2)
@@ -81,7 +81,7 @@ class Haar(object):
 		
 		return coeff
 	
-	def haarWaveletDetailSignal(self, j: int) -> np.array:
+	def waveletDetailSignal(self, j: int) -> np.array:
 		
 		try:
 			coeff = self.__coeffDict[j]
