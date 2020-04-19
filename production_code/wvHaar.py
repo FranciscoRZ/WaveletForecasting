@@ -34,6 +34,9 @@ class Haar(object):
 	def motherFunction(self, t: float) -> int:
 		return self.__firstHalfIndicator(t) - self.__secondHalfIndicator(t)
 	
+    def haarWaveletFunction(j: float, k: float, t: float) -> float:
+        return pow(2, j / 2) * haarMother(pow(2, j) * t - k)
+
 	#endregion
 	
 	#region GETTERS
@@ -44,17 +47,17 @@ class Haar(object):
 		except (KeyError):
 			print("KEY ERROR: Detail signal not found in computed results.")
 	
-	def getWaveletTransformJ(self, j: int) -> np.array:
+	def getWaveletCoefficientsJ(self, j: int) -> np.array:
 		try:
 			return self.__coeffDict[str(j)][1:np.size(self.__coeffDict[j]) - 3]
 		except (KeyError):
-			print("KEY ERROR: Wavelet transform not found in computed results.")
+			print("KEY ERROR: Wavelet coefficients not found in computed results.")
 	
 	#endregion
 	
 	#region TRANSFORM
 	
-	def waveletTransform(self, j: int) -> np.array:
+	def waveletCoefficients(self, j: int) -> np.array:
 
 		# Determine number of shifts possible at this resolution level
 		nb_k = int(np.ceil(self.__T / pow(2, -j)) + 2)
@@ -86,7 +89,7 @@ class Haar(object):
 		try:
 			coeff = self.__coeffDict[str(j)]
 		except(KeyError):
-			self.__coeffDict[str(j)] = self.waveletTransform(j)
+			self.__coeffDict[str(j)] = self.waveletCoefficients(j)
 			coeff = self.__coeffDict[str(j)]
 		
 		# Determine number of shifts possible at this resolution level
