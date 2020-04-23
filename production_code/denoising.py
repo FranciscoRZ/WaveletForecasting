@@ -34,16 +34,17 @@ class __AbstractDenoiser(abc.ABC):
         return
 
     @abc.abstractmethod
-    def compute_threshold(self, ts: list, universal_threshold: float) -> float:
+    def compute_threshold(self, ts: list, universal_threshold: float, T: int) -> float:
         pass
 
     def denoise_coefficients(self, WT: dict, method: str='hard') -> dict:
         all_scales = set([k[0] for (k, v) in WT.items()])
+        T = 2 * max(all_scales)
         WT_denoised = dict()
         universal_threshold = self.compute_universal_threshold(WT)
         for scale in all_scales:
             scale_coefficients = [v for (k, v) in WT.items() if k[0]==scale]
-            threshold = self.compute_threshold(scale_coefficients, universal_threshold)
+            threshold = self.compute_threshold(scale_coefficients, universal_threshold, T)
             scale_coefficients = self.suppress_by_scale(scale_coefficients,
                                                         threshold, method)
             WT_denoised.update({(scale, i):val for (i, val) in enumerate(scale_coefficients)})
@@ -66,18 +67,17 @@ class SURE(__AbstractDenoiser):
         '''
         return sum([pow(min(abs(x), threshold),2) for x in ts])
 
-    def __compute_SURE(self, ts: list, threshold: float):
+    def __compute_SURE(self, ts: list, threshold: float, T: int):
         ''' Equation (18) in article
         '''
-        T = len(ts)
         return T - self.__count_below_threshold(ts, threshold) \
                  + self.__sum_min_threshold(ts, threshold)
 
-    def compute_threshold(self, ts: list, universal_threshold: float) -> float:
+    def compute_threshold(self, ts: list, universal_threshold: float, T: int) -> float:
         ''' Equation (17) in article
         '''
         all_thresholds = np.linspace(0, universal_threshold, 1000)
-        all_SURE_scores = [self.__compute_SURE(ts, x) for x in all_thresholds]
+        all_SURE_scores = [self.__compute_SURE(ts, x, T) for x in all_thresholds]
         min_idx = np.argmin(all_SURE_scores)
         return all_thresholds[min_idx]
 
@@ -94,10 +94,10 @@ class SUREShrink(SURE):
         right = np.log2(pow(len(ts), 1.5))
         return left <= right
 
-    def compute_threshold(self, ts: list, universal_threshold: float) -> float:
+    def compute_threshold(self, ts: list, universal_threshold: float, T: int) -> float:
         ''' Article equation (17)
         '''
         if self.__use_universal_threshold(ts):
             return universal_threshold
         else:
-            return super().compute_threshold(ts, universal_threshold)
+            return super().compute_threshold(ts, universal_threshold, T)
